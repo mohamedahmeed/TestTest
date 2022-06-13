@@ -64,7 +64,7 @@ namespace TestTest.Controller
        
         // POST api/<RegionController>
         [HttpPost]
-        public ActionResult<RegionVm> PostRegion( RegionVm r)
+        public ActionResult<RegionVm> PostRegion( addRegionVm r)
         {
             Region region=db.regions.FirstOrDefault(s=>s.regionName==r.regionName);
             if(region == null)
