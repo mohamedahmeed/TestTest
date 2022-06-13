@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string hotelName { get; set; }
+        public int RoomsNumber { get; set; }
         public int regionId { get; set; }
     }
 }
