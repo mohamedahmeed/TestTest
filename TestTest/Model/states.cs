@@ -5,6 +5,8 @@ namespace TestTest.Model
 {
     public class states
     {
+        public int Id { get; set; }
+
         public string States { get; set; }
        
       
