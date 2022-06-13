@@ -17,6 +17,10 @@ namespace TestTest.Controller
         {
             dB = DB;
         }
+        private bool exist(string Name)
+        {
+            return dB.hotels.Any(s => s.hotelName == Name);
+        }
         // GET: api/<HotelController>
         [HttpGet]
         public ActionResult< IEnumerable<Hotel>> GetHotels()
@@ -24,7 +28,7 @@ namespace TestTest.Controller
             List<Hotel> h = dB.hotels.ToList();
             if(h != null)
                 {
-                List<HotelVm> hotels = dB.hotels.Select(s => new HotelVm
+                List<HotelVm> hotels = h.Select(s => new HotelVm
                 {
                     Id = s.Id,
                     hotelName = s.hotelName,
@@ -40,16 +44,19 @@ namespace TestTest.Controller
 
         // GET api/<HotelController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult GetHotelById(int id)
         {
-            return "value";
+        Hotel hotel=dB.hotels.Find(id);
+            if (hotel == null) { return NotFound(); }
+            else { return Ok(hotel); }
+          
         }
 
         // POST api/<HotelController>
         [HttpPost]
         public ActionResult PostHotel([FromBody] HotelVm  newHotel)
         {
-            if (dB.hotels.FirstOrDefault(h => h.hotelName == newHotel.hotelName) == null)
+            if (!exist(newHotel.hotelName))
             {
               Hotel newone= new Hotel()
               {
@@ -65,17 +72,44 @@ namespace TestTest.Controller
             return BadRequest();
 
         }
-
+      
+       
         // PUT api/<HotelController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(int id, [FromBody] EditHotelVm editHotel)
         {
+            Hotel hotel = dB.hotels.Find(id);
+            if (hotel == null) return NotFound();
+            else
+            {
+                if (!exist(editHotel.hotelName)) 
+                {
+                    hotel.hotelName = editHotel.hotelName;
+                    hotel.RoomsNumber = editHotel.RoomsNumber;
+                    hotel.regionId = editHotel.regionId;
+
+                    dB.hotels.Update(hotel);
+                    dB.SaveChanges();
+                }
+               return Ok();
+            }
+
         }
 
         // DELETE api/<HotelController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            Hotel hotel =dB.hotels.Find(id);
+            if (hotel == null)
+            {
+                return NotFound();
+            }
+            else { 
+                dB.hotels.Remove(hotel);
+                dB.SaveChanges();
+                return Ok();
+            }
         }
     }
 }

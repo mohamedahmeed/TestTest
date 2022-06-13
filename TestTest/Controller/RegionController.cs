@@ -8,6 +8,7 @@ using TestTest.VM;
 
 namespace TestTest.Controller
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class RegionController : ControllerBase
@@ -20,7 +21,7 @@ namespace TestTest.Controller
         }
         // GET: api/<RegionController>
         [HttpGet]
-        public ActionResult<IEnumerable<RegionVm>> GetRegions()
+        public ActionResult<IEnumerable<addRegionVm>> GetRegions()
         {
             List<Region> regions1 = db.regions.Include(s=>s.Country).ToList();
             if (regions1 == null)
@@ -28,15 +29,13 @@ namespace TestTest.Controller
                 return NoContent();
             }
             List<Country> cc = db.Countries.ToList();
-            List<RegionVm> regions = db.regions.Select(r => new RegionVm
+            List<addRegionVm> regions = regions1.Select(r => new addRegionVm
             {
             Id = r.Id,
                 countryId = r.countryId,
                 regionName = r.regionName,
                 t=r.Country.countryName,
-                countries=cc,
-
-
+             
             }).ToList();
             return Ok(regions);
 
@@ -44,7 +43,7 @@ namespace TestTest.Controller
 
         // GET api/<RegionController>/5
         [HttpGet("{id}")]
-        public ActionResult<RegionVm> GetRegionById(int id)
+        public ActionResult<addRegionVm> GetRegionById(int id)
         {
             Region region = db.regions.Include(s => s.Country).Where(s=>s.Id==id).FirstOrDefault();
             if (region == null)
@@ -52,12 +51,12 @@ namespace TestTest.Controller
                 return NoContent();
             }
             List<Country> cc = db.Countries.ToList();
-            RegionVm vm = new RegionVm()
+            addRegionVm vm = new addRegionVm()
             {
                 countryId = region.countryId,
                 Id=region.Id,
                 regionName = region.regionName,
-               countries=cc,
+               
             };
             return Ok(vm);
         }
